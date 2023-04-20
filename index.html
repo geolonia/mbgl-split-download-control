@@ -15,11 +15,17 @@
       padding: 0;
       margin: 0;
     }
+    #downloadButton {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+    }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
+  <button id="downloadButton">ダウンロード</button>
   <script type="text/javascript" src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/coordinates2pixels@1.0.0/index.min.js"></script>
@@ -78,11 +84,45 @@
       const width = bboxPixels[2] - bboxPixels[0]
       const height = bboxPixels[3] - bboxPixels[1]
 
-      console.log(width, height)
+      const div = document.createElement('div')
+      div.id = "snapshot"
+      div.style.width = "7000px"
+      div.style.height = "7000px"
 
-      
+      // div の高さと幅を取得
+      console.log(div.style)
+
+      // div.width = width + 'px';
+      // div.height = height + 'px';
+
+      const snapshotMap = new geolonia.Map({
+        container: div,
+        style: 'geolonia/basic',
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        hash: true,
+        preserveDrawingBuffer: true
+      });
+
+      const canvas =  snapshotMap.getCanvas();
+      canvas.style.width = "7000px";
+      canvas.style.height = "7000px";
+
+      // canvas の高さと幅を取得
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      console.log(canvasWidth, canvasHeight)
+
+      // ダウンロードボタンを取得し、クリックイベントを設定する
+      const downloadButton = document.getElementById('downloadButton');
+      downloadButton.addEventListener('click', function() {
+          const link = document.createElement('a');
+          link.href = canvas.toDataURL('image/png'); // キャンバスの内容を画像としてエンコード
+          link.download = 'canvas_image.png'; // ダウンロードするファイル名を設定
+          link.click();
+      });
     })
-
   </script>
 </body>
 </html>
