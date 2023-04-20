@@ -21,17 +21,68 @@
 <body>
   <div id="map"></div>
   <script type="text/javascript" src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/coordinates2pixels@1.0.0/index.min.js"></script>
   <script>
+
     const map = new geolonia.Map({
       container: '#map',
       style: 'geolonia/basic',
       center: [139.7648345, 35.6798619],
       zoom: 16,
+      hash: true
     });
+
+    const coordinates = [
+      [
+        [
+          139.73639456629195,
+          35.696108916810715
+        ],
+        [
+          139.73639456629195,
+          35.66956791644631
+        ],
+        [
+          139.77048756800008,
+          35.66956791644631
+        ],
+        [
+          139.77048756800008,
+          35.696108916810715
+        ],
+        [
+          139.73639456629195,
+          35.696108916810715
+        ]
+      ]
+    ]
+    const convertBoundingBoxToPixels = (bbox, zoom) => {
+      // bboxは左下(lng,lat)と右上(lng,lat)の座標が入った配列
+      // それぞれをピクセル座標に変換する
+      const x1 = lng2pixel(bbox[0], zoom);
+      const y2 = lat2pixel(bbox[1], zoom);
+      const x2 = lng2pixel(bbox[2], zoom);
+      const y1 = lat2pixel(bbox[3], zoom);
+
+      return [x1, y1, x2, y2];
+    }
 
     map.on('load', () => {
 
-    });
+      const zoom = map.getZoom()
+      const bbox = turf.bbox(turf.polygon(coordinates))
+      const bboxPixels = convertBoundingBoxToPixels(bbox, zoom)
+
+      // 高さと幅を計算
+      const width = bboxPixels[2] - bboxPixels[0]
+      const height = bboxPixels[3] - bboxPixels[1]
+
+      console.log(width, height)
+
+      
+    })
+
   </script>
 </body>
 </html>
