@@ -11,7 +11,7 @@
     body,
     #map {
       width: 100%;
-      height: 100%;
+      height: 500px;
       padding: 0;
       margin: 0;
     }
@@ -86,14 +86,11 @@
 
       const div = document.createElement('div')
       div.id = "snapshot"
-      div.style.width = "7000px"
-      div.style.height = "7000px"
 
-      // div の高さと幅を取得
-      console.log(div.style)
-
-      // div.width = width + 'px';
-      // div.height = height + 'px';
+      const body = document.getElementsByTagName('body')[0]
+      body.appendChild(div)
+      div.style.width = width + 'px';
+      div.style.height = height + 'px';
 
       const snapshotMap = new geolonia.Map({
         container: div,
@@ -105,14 +102,6 @@
       });
 
       const canvas =  snapshotMap.getCanvas();
-      canvas.style.width = "7000px";
-      canvas.style.height = "7000px";
-
-      // canvas の高さと幅を取得
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
-
-      console.log(canvasWidth, canvasHeight)
 
       // ダウンロードボタンを取得し、クリックイベントを設定する
       const downloadButton = document.getElementById('downloadButton');
