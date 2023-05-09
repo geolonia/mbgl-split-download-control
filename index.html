@@ -89,8 +89,10 @@
 
       const body = document.getElementsByTagName('body')[0]
       body.appendChild(div)
-      div.style.width = width + 'px';
-      div.style.height = height + 'px';
+      div.style.width = '1000px';
+      div.style.height = '1000px';
+      // div.style.width = width + 'px';
+      // div.style.height = height + 'px';
 
       const snapshotMap = new geolonia.Map({
         container: div,
@@ -103,13 +105,36 @@
 
       const canvas =  snapshotMap.getCanvas();
 
+      function downloadImages() {
+        const split = 3 // 3x3に分割する、分割数を変更する場合はここを変更する
+
+        const w = canvas.width / split;
+        const h = canvas.height / split;
+
+        for (let i = 0; i < split; i++) {
+          for (let j = 0; j < split; j++) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            tempCtx.drawImage(canvas, w * i, h * j, w, h, 0, 0, w, h);
+
+            const link = document.createElement('a');
+            link.href = tempCanvas.toDataURL('image/png');
+            link.download = `image_${i}_${j}.png`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }
+      }
+
       // ダウンロードボタンを取得し、クリックイベントを設定する
       const downloadButton = document.getElementById('downloadButton');
       downloadButton.addEventListener('click', function() {
-          const link = document.createElement('a');
-          link.href = canvas.toDataURL('image/png'); // キャンバスの内容を画像としてエンコード
-          link.download = 'canvas_image.png'; // ダウンロードするファイル名を設定
-          link.click();
+        downloadImages();
       });
     })
   </script>
